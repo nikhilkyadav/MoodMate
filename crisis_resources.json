@@ -1,0 +1,49 @@
+{
+  "default_message": "I hear how much pain you're in, and I want you to know you don't have to carry this alone. Please reach out to someone who can help keep you safe right now. There are free, confidential support services available 24/7.",
+  "stay_and_talk_message": "I'm right here with you, but your safety is what matters most. Please connect with one of these resources or reach out to a trusted loved one.",
+  "resources": [
+    {
+      "region": "India",
+      "name": "Tele-MANAS (Mental Health Helpline)",
+      "number": "14416 or 1800-891-4416",
+      "available": "24/7, Toll-free, Multilingual",
+      "url": "https://telemanas.mohfw.gov.in"
+    },
+    {
+      "region": "India",
+      "name": "Vandrevala Foundation",
+      "number": "+91 9999 666 555",
+      "available": "24/7, Free & Confidential",
+      "url": "https://www.vandrevalafoundation.com"
+    },
+    {
+      "region": "United States & Canada",
+      "name": "Suicide & Crisis Lifeline",
+      "number": "988 (Call or Text)",
+      "available": "24/7, Toll-free",
+      "url": "https://988lifeline.org"
+    },
+    {
+      "region": "United Kingdom",
+      "name": "Samaritans & NHS 111",
+      "number": "116 123 (Samaritans) / 111 (NHS)",
+      "available": "24/7, Free",
+      "url": "https://www.samaritans.org"
+    },
+    {
+      "region": "Worldwide / International",
+      "name": "Befrienders Worldwide & Find A Helpline",
+      "number": "[Find confidential local helpline in your country]",
+      "available": "Free, global database",
+      "url": "https://findahelpline.com"
+    },
+    {
+      "region": "Custom Local Helpline (Deployer Configurable)",
+      "name": "[YOUR LOCAL CRISIS SERVICE NAME]",
+      "number": "[INSERT LOCAL HELPLINE NUMBER]",
+      "available": "[HOURS/DETAILS]",
+      "url": "[LOCAL RESOURCE WEBSITE]"
+    }
+  ]
+}
+

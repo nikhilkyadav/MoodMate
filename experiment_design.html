@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MoodMate - Experiment Design & Evaluation Framework</title>
+  
+  <!-- KaTeX for LaTeX Math -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false}
+            ]
+          });"></script>
+
+  <!-- Mermaid.js for Diagrams -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'neutral',
+      fontFamily: 'Inter, system-ui, sans-serif',
+      securityLevel: 'loose',
+      flowchart: { useMaxWidth: false, htmlLabels: true },
+      sequence: { useMaxWidth: false, showSequenceNumbers: true }
+    });
+  </script>
+
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 18mm 16mm 18mm 16mm;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.55;
+      color: #1e293b;
+      background: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      color: #0f172a;
+      font-weight: 700;
+      line-height: 1.25;
+      margin-top: 1.4em;
+      margin-bottom: 0.5em;
+      page-break-after: avoid;
+    }
+
+    h1 {
+      font-size: 20pt;
+      border-bottom: 2px solid #3b82f6;
+      padding-bottom: 8px;
+      margin-top: 0;
+      color: #1d4ed8;
+    }
+
+    h2 {
+      font-size: 14pt;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 4px;
+      margin-top: 1.6em;
+      color: #0f172a;
+    }
+
+    h3 {
+      font-size: 11.5pt;
+      margin-top: 1.2em;
+      color: #334155;
+    }
+
+    p {
+      margin: 0.6em 0;
+    }
+
+    blockquote {
+      margin: 1em 0;
+      padding: 10px 16px;
+      background-color: #f8fafc;
+      border-left: 4px solid #3b82f6;
+      border-radius: 0 6px 6px 0;
+      color: #334155;
+      font-size: 9.5pt;
+    }
+
+    blockquote p {
+      margin: 0.3em 0;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.2em 0;
+      font-size: 9pt;
+      page-break-inside: avoid;
+    }
+
+    th, td {
+      padding: 8px 10px;
+      border: 1px solid #cbd5e1;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    tr:nth-child(even) td {
+      background-color: #f8fafc;
+    }
+
+    /* Lists */
+    ul, ol {
+      margin: 0.5em 0;
+      padding-left: 24px;
+    }
+
+    li {
+      margin-bottom: 0.3em;
+    }
+
+    /* Code & Pre */
+    code {
+      font-family: "JetBrains Mono", Consolas, Monaco, "Courier New", monospace;
+      font-size: 8.8pt;
+      background-color: #f1f5f9;
+      padding: 2px 5px;
+      border-radius: 4px;
+      color: #0f172a;
+      border: 1px solid #e2e8f0;
+    }
+
+    pre {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 12px;
+      overflow-x: auto;
+      font-size: 8.5pt;
+      line-height: 1.4;
+      page-break-inside: avoid;
+    }
+
+    pre code {
+      background: none;
+      border: none;
+      padding: 0;
+    }
+
+    /* Mermaid Diagrams */
+    .mermaid-container {
+      margin: 1.4em 0;
+      text-align: center;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px;
+      page-break-inside: avoid;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    .mermaid svg {
+      max-width: 100% !important;
+      height: auto !important;
+    }
+
+    /* Horizontal Rule */
+    hr {
+      border: none;
+      border-top: 1px solid #e2e8f0;
+      margin: 1.8em 0;
+    }
+
+    /* Print Optimizations */
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .mermaid-container, table, blockquote {
+        page-break-inside: avoid;
+      }
+      h1, h2, h3 {
+        page-break-after: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>MoodMate: Empirical Experiment Design &amp; Evaluation Framework</h1>
+<blockquote>
+<p><strong>Document Type:</strong> Research &amp; Experimental Evaluation Protocol<br />
+<strong>System Under Test:</strong> MoodMate (Conversational AI Companion with Iso-Principle Music Recommendation)<br />
+<strong>Authors/Researchers:</strong> Nikhil Yadav &amp; Engineering Team<br />
+<strong>Target Scope:</strong> Human-Computer Interaction (HCI), Affective Computing &amp; Applied AI Evaluation  </p>
+</blockquote>
+<hr />
+<h2>1. Executive Summary &amp; Purpose</h2>
+<p>This document outlines the formal <strong>experimental design</strong> to evaluate <strong>MoodMate</strong>, an empathetic AI chatbot integrating conversational empathy with real-time mood detection, continuous background music playback, and mood-adaptive song curation grounded in the <strong>iso-principle</strong> (matching a user's current affective state before gradually transitioning toward an uplifted valence).</p>
+<p>The goal of this evaluation is to empirically measure:<br />
+1. <strong>Affective Efficacy:</strong> Does the iso-principle music transition lead to statistically significant positive mood shifts compared to baseline recommendation approaches?<br />
+2. <strong>Conversational Quality &amp; Empathy:</strong> How do local open-weights LLMs (Ollama Llama 3.2 3B) compare against high-parameter cloud models (Groq Llama 3.3 70B, Google Gemini 2.0 Flash) in perceived empathy, contextual understanding, and multilingual coherence?<br />
+3. <strong>User Engagement &amp; Agency:</strong> How does conversational music recommendation with background streaming affect session engagement and song acceptance rates compared to static playlist recommenders?</p>
+<hr />
+<h2>2. Research Questions (RQs) &amp; Formal Hypotheses</h2>
+<div class="mermaid-container"><div class="mermaid">flowchart LR
+    A["User Input and Baseline Mood"] --> B{"Recommendation Strategy"}
+    B -->|"Strategy A: Iso-Principle"| C["Initial Match to Gradual Uplift"]
+    B -->|"Strategy B: Direct Upbeat"| D["Immediate High-Arousal Uplift"]
+    B -->|"Strategy C: Control"| E["Random or Popular Baseline"]
+    C --> F["Post-Session Mood Evaluation"]
+    D --> F
+    E --> F
+    F --> G["Statistical Verification (t-test / ANOVA)"]</div></div>
+
+<h3><strong>RQ1: Affective Regulation via the Iso-Principle</strong></h3>
+<ul>
+<li><strong>Question:</strong> Does recommending songs matching the user's initial mood followed by gradual mood-elevating tracks (the iso-principle) produce superior emotional regulation compared to immediately forcing cheerful/upbeat songs?</li>
+<li><strong>Hypothesis $H_1$:</strong> Participants in the <strong>Iso-Principle condition</strong> will demonstrate a significantly higher positive mood shift ($\Delta \text{Mood} = \text{Mood}<em>{\text{post}} - \text{Mood}</em>{\text{pre}}$) than participants presented with immediate upbeat recommendations.</li>
+<li><strong>Null Hypothesis $H_0$:</strong> There is no significant difference in mood shift between iso-principle and direct upbeat recommendation strategies.</li>
+</ul>
+<h3><strong>RQ2: LLM Architecture &amp; Perceived Companion Empathy</strong></h3>
+<ul>
+<li><strong>Question:</strong> What is the tradeoff between edge/local offline models (Ollama Llama 3.2 3B / Built-in Companion) and large cloud models (Llama 3.3 70B, Gemini 2.0 Flash) across perceived empathy, conversational coherence, and response latency?</li>
+<li><strong>Hypothesis $H_2$:</strong> Cloud models (Groq Llama 3.3 70B / Gemini 2.0) will yield significantly higher <em>Bot Understanding</em> scores (1–5) and lower hallucination rates than compact 3B edge models, but local/built-in models will achieve significantly higher perceived <em>Privacy Confidence</em> and zero latency variance.</li>
+</ul>
+<h3><strong>RQ3: Multilingual &amp; Cultural Coherence</strong></h3>
+<ul>
+<li><strong>Question:</strong> Does conversational mirroring in regional languages (Hindi, Bengali, and Hinglish) enhance song card click-through rates and perceived connection compared to English-only interactions?</li>
+<li><strong>Hypothesis $H_3$:</strong> Users conversing in their native/preferred language (Hindi/Bengali/Hinglish) will exhibit higher song selection ratios ($S_{\text{selected}} / S_{\text{recommended}}$) and session retention when songs and explanations align culturally.</li>
+</ul>
+<hr />
+<h2>3. Experimental Variables</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Variable Class</th>
+<th style="text-align: left;">Variable Name</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Operational Definition / Measurement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Independent (IV 1)</strong></td>
+<td style="text-align: left;"><strong>Music Transition Strategy</strong></td>
+<td style="text-align: left;">Categorical (3 levels)</td>
+<td style="text-align: left;">• Condition 1: <strong>Iso-Principle</strong> (Match $\rightarrow$ Moderate Uplift $\rightarrow$ Positive Uplift)<br>• Condition 2: <strong>Direct Upbeat</strong> (Always recommend high valence/arousal songs)<br>• Condition 3: <strong>Control</strong> (Popular songs without mood alignment)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Independent (IV 2)</strong></td>
+<td style="text-align: left;"><strong>AI Brain Model</strong></td>
+<td style="text-align: left;">Categorical (3 levels)</td>
+<td style="text-align: left;">• Model A: <code>ollama/llama3.2</code> (Local 3B edge inference)<br>• Model B: <code>groq/llama-3.3-70b-versatile</code> (Cloud open weights)<br>• Model C: <code>gemini/gemini-2.0-flash</code> (Cloud multimodal LLM)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Independent (IV 3)</strong></td>
+<td style="text-align: left;"><strong>Interaction Language</strong></td>
+<td style="text-align: left;">Categorical (3 levels)</td>
+<td style="text-align: left;">English, Hindi (or Hinglish), Bengali</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Dependent (DV 1)</strong></td>
+<td style="text-align: left;"><strong>Mood Shift ($\Delta \text{Mood}$)</strong></td>
+<td style="text-align: left;">Continuous / Ordinal</td>
+<td style="text-align: left;">Measured via Self-Assessment Manikin (SAM) / 5-point Emoji scale ($\text{Mood}<em>{\text{final}} - \text{Mood}</em>{\text{initial}}$)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Dependent (DV 2)</strong></td>
+<td style="text-align: left;"><strong>Music Helpful Score</strong></td>
+<td style="text-align: left;">Categorical / Ordinal</td>
+<td style="text-align: left;">Survey response: <em>"Did the songs help?"</em> (1 = No, 2 = Somewhat, 3 = Yes)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Dependent (DV 3)</strong></td>
+<td style="text-align: left;"><strong>Perceived Bot Understanding</strong></td>
+<td style="text-align: left;">5-point Likert</td>
+<td style="text-align: left;">Survey question: <em>"Did the bot understand you?"</em> (1 = Not at all, 5 = Completely)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Dependent (DV 4)</strong></td>
+<td style="text-align: left;"><strong>Song Selection Rate (CTR)</strong></td>
+<td style="text-align: left;">Ratio ($0.0 - 1.0$)</td>
+<td style="text-align: left;">$\frac{\text{Count of User-Selected Songs}}{\text{Total Songs Recommended by System}}$</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Dependent (DV 5)</strong></td>
+<td style="text-align: left;"><strong>Session Engagement</strong></td>
+<td style="text-align: left;">Quantitative</td>
+<td style="text-align: left;">Interaction turn count, active audio playback time (minutes), overall session rating (1–5 stars)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>4. Participant Cohort &amp; Sampling Plan</h2>
+<div class="mermaid-container"><div class="mermaid">graph TD
+    A["Recruitment Pool (N = 60-90 Participants)"] --> B["Screening and Ethical Consent"]
+    B --> C["Stratified Random Assignment"]
+    C --> D["Group 1: Iso-Principle (n = 20-30)"]
+    C --> E["Group 2: Direct Upbeat (n = 20-30)"]
+    C --> F["Group 3: Control Baseline (n = 20-30)"]
+    D --> G["Latin Square Model Rotation"]
+    E --> G
+    F --> G</div></div>
+
+<ol>
+<li><strong>Cohort Size:</strong> $N = 60$ to $90$ participants (providing $&gt; 80\%$ statistical power at $\alpha = 0.05$ for medium effect size $d = 0.5$).</li>
+<li><strong>Inclusion Criteria:</strong><br />
+   - Adults (age 18–45).<br />
+   - Regular listeners of digital music (streaming at least 30 minutes daily).<br />
+   - Comfortable conversing in English, Hindi, or Bengali.</li>
+<li><strong>Exclusion Criteria:</strong><br />
+   - Acute clinically diagnosed psychiatric emergencies (participants flagged by the safety system are immediately diverted to emergency support resources).</li>
+<li><strong>Ethics &amp; Privacy Protocol:</strong><br />
+   - <strong>Informed Consent Checkbox:</strong> Explicit participant consent recorded prior to authentication.<br />
+   - <strong>Data Sanitization:</strong> Participant names, phones, and emails encrypted via Fernet AES-128-CBC. Analysis performed solely on anonymized UUIDs (<code>user_id</code>).<br />
+   - <strong>Crisis Safeguards:</strong> Automated crisis intervention keywords immediately stop testing, display regional 24/7 helpline contacts (Vandrevala Foundation, KIRAN, AASRA), and abort recommendations.</li>
+</ol>
+<hr />
+<h2>5. Experimental Protocol &amp; User Flow</h2>
+<div class="mermaid-container"><div class="mermaid">sequenceDiagram
+    autonumber
+    participant P as "Participant"
+    participant W as "MoodMate Frontend"
+    participant S as "FastAPI Backend"
+    participant D as "Excel Database"
+
+    P->>W: Login or Register and Accept Consent
+    W->>S: POST /api/auth/login
+    S-->>W: Auth JWT and Preferred Model Assigned
+    P->>W: Select Initial Mood Chip (e.g. Sad)
+    W->>S: POST /api/session/start (initial_mood)
+    S->>D: Log New Session into Sheet Sessions
+
+    loop 5 to 10 Chat Turns
+        P->>W: Shares feeling, vents, or asks question
+        W->>S: POST /api/chat (message, now_playing)
+        S->>S: Run LLM, Mood Heuristic, and Music Resolver
+        S->>D: Log Turn to Chats and Music_Log
+        S-->>W: Bot Reply and 3 Song Cards
+        alt Participant Taps Song Card
+            P->>W: Taps Card (e.g. Budapest)
+            W->>S: POST /api/music/select
+            S->>D: Update Music_Log (user_selected = Y)
+            W->>W: Plays track in background mini-player
+        end
+    end
+
+    P->>W: Clicks End Session (or 15-min timeout)
+    W-->>P: Displays Structured Feedback Modal
+    P->>W: Submits Ratings (Overall, Mood After, Understanding)
+    W->>S: POST /api/session/end and /api/feedback
+    S->>D: Write to Sheets Sessions and Feedback
+    S-->>W: Session Complete Confirmation</div></div>
+
+<h3><strong>Session Walkthrough (Step-by-Step):</strong></h3>
+<ol>
+<li><strong>Pre-Session Baseline (T0):</strong><br />
+   - Participant logs into MoodMate.<br />
+   - Pre-session prompt asks: <em>"How are you feeling today?"</em> with standard mood chips ($1 = \text{Angry/Sad}, 5 = \text{Excited/Happy}$).<br />
+   - Initial mood is recorded in <code>moodmate_data.xlsx</code> (<code>Sessions</code> sheet).</li>
+<li><strong>Interaction Phase (T1 – 15 Minutes):</strong><br />
+   - Minimum 5 conversation turns.<br />
+   - The assigned music condition triggers song recommendation cards:<ul>
+<li><strong>Group A (Iso-Principle):</strong> First turn matches mood (e.g., low-valence calm/sad); second turn introduces mid-tempo transition; third turn introduces uplifting rhythm.</li>
+<li><strong>Group B (Direct Upbeat):</strong> Recommends 120+ BPM upbeat party/dance tracks immediately regardless of reported sadness.</li>
+<li><strong>Group C (Control):</strong> Recommends popular top-chart tracks randomly without mood correlation.</li>
+<li>Audio streams continuously via the docked mini-player while chat continues uninterrupted.</li>
+</ul>
+</li>
+<li><strong>Post-Session Evaluation (T2):</strong><br />
+   - Participant fills out the built-in feedback modal:<ul>
+<li>Final Mood Rating (Emoji / SAM scale).</li>
+<li>Perceived Empathy / Bot Understanding (1–5 Likert).</li>
+<li>Song Helpfulness (<code>Yes</code> / <code>Somewhat</code> / <code>No</code>).</li>
+<li>AI Brain Rating (1–5).</li>
+<li>Qualitative feedback text area.</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2>6. Data Mapping to Storage Schema</h2>
+<p>All experimental telemetry is automatically persisted in real-time to <code>moodmate_data.xlsx</code> without external database dependencies:</p>
+<div class="mermaid-container"><div class="mermaid">erDiagram
+    USERS ||--o{ SESSIONS : initiates
+    SESSIONS ||--o{ CHATS : contains
+    SESSIONS ||--o{ MUSIC_LOG : triggers
+    SESSIONS ||--|| FEEDBACK : evaluates
+
+    USERS {
+        uuid user_id PK
+        string email_hash
+        string preferred_model
+        datetime created_at
+    }
+    SESSIONS {
+        uuid session_id PK
+        uuid user_id FK
+        datetime start_time
+        datetime end_time
+        string initial_mood
+        string final_mood
+        int songs_played_count
+        string models_used
+    }
+    CHATS {
+        uuid chat_id PK
+        uuid session_id FK
+        string sender
+        string message
+        string detected_mood
+        string model_used
+        string song_recommended
+        string song_selected
+    }
+    MUSIC_LOG {
+        uuid log_id PK
+        uuid session_id FK
+        string song_title
+        string artist
+        string video_id
+        string mood_at_time
+        string user_selected
+    }
+    FEEDBACK {
+        uuid feedback_id PK
+        uuid session_id FK
+        int overall_rating
+        string mood_before
+        string mood_after
+        string songs_helped
+        int bot_understanding
+        int model_rating
+        string comments
+    }</div></div>
+
+<hr />
+<h2>7. Statistical Analysis &amp; Evaluation Plan</h2>
+<h3>7.1 Quantitative Analysis</h3>
+<ol>
+<li><strong>Mood Improvement Testing ($H_1$):</strong><br />
+   - Calculate $\Delta \text{Mood}_i = \text{Score}(\text{mood_after}_i) - \text{Score}(\text{mood_before}_i)$.<br />
+   - Conduct a <strong>One-Way Analysis of Variance (ANOVA)</strong> (or non-parametric <strong>Kruskal-Wallis H-test</strong>) comparing $\Delta \text{Mood}$ across Group A (Iso-Principle), Group B (Direct Upbeat), and Group C (Control).<br />
+   - Post-hoc pairwise comparisons using <strong>Tukey’s HSD</strong> or <strong>Dunn’s test</strong> with Bonferroni correction.</li>
+<li><strong>Model Comparison Testing ($H_2$):</strong><br />
+   - Compare <em>Bot Understanding Score</em> (1–5) and <em>Model Rating</em> (1–5) between Ollama Llama 3.2, Groq Llama 3.3, and Gemini 2.0 using a <strong>Repeated-Measures ANOVA</strong> or <strong>Friedman Test</strong>.</li>
+<li><strong>Song Engagement Metrics ($H_3$):</strong><br />
+   - Compute Song Selection Click-Through Rate:<br />
+     $$\text{CTR} = \frac{\sum \text{Music_Log}[\text{user_selected} == \text{'Y'}]}{\text{Count of Total Recommendations}}$$<br />
+   - Pearson’s $\chi^2$ test of independence to assess whether song language preference significantly increases CTR.</li>
+</ol>
+<h3>7.2 Qualitative Analysis</h3>
+<ul>
+<li>Thematic analysis on participant comments from the <code>Feedback</code> sheet:</li>
+<li>Categorizing qualitative responses into themes: <em>Emotional Resonance</em>, <em>Music Alignment</em>, <em>Conversational Naturalness</em>, and <em>Player Usability</em>.</li>
+</ul>
+<hr />
+<h2>8. Threats to Validity &amp; Mitigation</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Threat Category</th>
+<th style="text-align: left;">Potential Risk</th>
+<th style="text-align: left;">Mitigation in MoodMate Architecture</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Internal Validity</strong></td>
+<td style="text-align: left;">Novelty effect of interacting with a musical chatbot inflating initial ratings.</td>
+<td style="text-align: left;">Require multi-session interaction (minimum 2 sessions per participant over 48 hours).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Playback Latency</strong></td>
+<td style="text-align: left;">Broken YouTube links causing audio dropouts and negative bias.</td>
+<td style="text-align: left;"><strong>Dual-Engine Playback</strong>: If YouTube errors (code 100/150), MoodMate automatically switches to verified 30s iTunes AAC streams or advances to the next track within 200ms.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Safety / Crisis Bias</strong></td>
+<td style="text-align: left;">Distress triggered by simulated crisis prompts during testing.</td>
+<td style="text-align: left;">Server-side crisis detector checks all inputs against English, Hindi, Bengali, and Hinglish safety dictionaries <em>before</em> LLM generation, instantly offering emergency helpline guidance.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Privacy Concerns</strong></td>
+<td style="text-align: left;">Participants hesitating to share authentic emotional states due to fear of data leaks.</td>
+<td style="text-align: left;">Client-side consent disclosure + master Fernet AES encryption of PII. Raw Excel inspector demonstrates that student/evaluator views cannot inspect plaintext identity without <code>--decrypt</code> flag.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>9. Next Steps for Experiment Execution</h2>
+<ol>
+<li><strong>Pilot Run ($N = 6$):</strong> Run 2 participants through each condition (Iso-Principle, Direct Upbeat, Control) to confirm logging accuracy in <code>moodmate_data.xlsx</code>.</li>
+<li><strong>Data Export &amp; Scrubbing:</strong> Execute <code>backend/admin_view.py --raw</code> to verify cryptographic masking, then extract clean CSVs for R/Python analysis.</li>
+<li><strong>Automated Analytics Script:</strong> Generate an automated evaluation script (<code>evaluate_results.py</code>) utilizing <code>scipy.stats</code> and <code>pandas</code> to output ANOVA tables and publication-ready box plots.</li>
+</ol>
+</body>
+</html>

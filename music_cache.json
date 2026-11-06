@@ -1,0 +1,34 @@
+{
+  "fix you - coldplay": {
+    "mood": "sad",
+    "title": "Fix You",
+    "artist": "Coldplay",
+    "language": "English",
+    "video_id": "k4V3gHjgzjU",
+    "reason": "Starts in quiet grief and builds into a beacon of warmth and healing (iso-principle)."
+  },
+  "unknown song that does not exist 9999 - ghost artist": {
+    "title": "Unknown Song That Does Not Exist 9999",
+    "artist": "Ghost Artist",
+    "language": "English",
+    "video_id": "rfCvBFIv454",
+    "mood": "sad",
+    "reason": "Matches your current sad vibe."
+  },
+  "amake amar moto thakte dao - anupam roy": {
+    "mood": "sad",
+    "title": "Amake Amar Moto Thakte Dao",
+    "artist": "Anupam Roy",
+    "language": "Bengali",
+    "video_id": "f5jF8jXkZ8g",
+    "reason": "An anthem of quiet personal solace when the world feels too overwhelming."
+  },
+  "kabira - tochi raina & rekha bhardwaj": {
+    "mood": "sad",
+    "title": "Kabira",
+    "artist": "Tochi Raina & Rekha Bhardwaj",
+    "language": "Hindi",
+    "video_id": "jHNNMj5bNQw",
+    "reason": "Soulful blend of poignant longing and gentle grounding acceptance."
+  }
+}
